@@ -1,0 +1,58 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UserProfile {
+  id         String   @id @default(cuid())
+  clerkId    String   @unique
+  fullName   String
+  age        Int?
+  occupation String?
+  bio        String?  @db.Text
+  smoker     Boolean  @default(false)
+  pets       Boolean  @default(false)
+  budget     Float?
+  district   String? 
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  listings  Listing[]
+  favorites Favorite[]
+}
+
+model Listing {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  rent        Float
+  district    String 
+  moveInDate  DateTime
+  roomType    String 
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId    String
+  user      UserProfile @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  favorites Favorite[]
+
+  @@index([district])
+  @@index([rent])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      UserProfile @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+  listingId String
+  listing   Listing     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId])
+}
