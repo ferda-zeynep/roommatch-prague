@@ -1,65 +1,131 @@
-import Image from "next/image";
+import Link from "next/link";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
+      {/* NAVBAR */}
+      <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center max-w-7xl w-full mx-auto rounded-b-xl shadow-sm">
+        <Link
+          href="/"
+          className="text-xl font-bold text-indigo-600 tracking-tight"
+        >
+          RoomMatch <span className="text-slate-700">Prague</span>
+        </Link>
+        <nav className="flex items-center gap-4">
+          <Link
+            href="/listings"
+            className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
+          >
+            Browse Listings
+          </Link>
+          <SignedIn>
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
+            >
+              Dashboard
+            </Link>
+            <UserButton />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm">
+                Sign In
+              </button>
+            </SignInButton>
+          </SignedOut>
+        </nav>
+      </header>
+
+      {/* HERO SECTION */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-16 flex flex-col items-center justify-center text-center">
+        <div className="max-w-3xl">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
+            Find Your Perfect Roommate in{" "}
+            <span className="text-indigo-600">Prague</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+            Connect with students and young professionals relocating to Prague.
+            Match by budget, district, and lifestyle choices seamlessly.
           </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/listings"
+              className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition shadow-md"
+            >
+              Browse Listings
+            </Link>
+            <Link
+              href="/listings/create"
+              className="bg-white border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-medium hover:bg-slate-50 transition shadow-sm"
+            >
+              Create Listing
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* FEATURES SECTION */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 w-full">
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-left">
+            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4 font-bold text-lg">
+              ✓
+            </div>
+            <h3 className="text-lg font-bold mb-2 text-slate-800">
+              Verified Profiles
+            </h3>
+            <p className="text-slate-600 text-sm">
+              Secure verification ensures you are browsing and talking to real
+              people moving to Prague.
+            </p>
+          </div>
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-left">
+            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4 font-bold text-lg">
+              ⚙
+            </div>
+            <h3 className="text-lg font-bold mb-2 text-slate-800">
+              Smart Filtering
+            </h3>
+            <p className="text-slate-600 text-sm">
+              Filter listings by rent, precise Prague districts, room types, and
+              specific habits.
+            </p>
+          </div>
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-left">
+            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4 font-bold text-lg">
+              ⚡
+            </div>
+            <h3 className="text-lg font-bold mb-2 text-slate-800">
+              Match Scoring
+            </h3>
+            <p className="text-slate-600 text-sm">
+              See your lifestyle compatibility percentage instantly next to
+              every potential listing.
+            </p>
+          </div>
+        </div>
+
+        {/* CTA SECTION */}
+        <div className="bg-indigo-900 text-white rounded-3xl p-12 mt-24 text-center w-full shadow-xl relative overflow-hidden">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            Ready to find your next roommate?
+          </h2>
+          <p className="text-indigo-200 mb-6 max-w-md mx-auto text-sm md:text-base">
+            Join our community today and secure your stay in Prague with the
+            right flatmate.
+          </p>
+          <SignInButton mode="modal">
+            <button className="bg-white text-indigo-900 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition shadow-md">
+              Get Started Now
+            </button>
+          </SignInButton>
         </div>
       </main>
+
+      {/* FOOTER */}
+      <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 max-w-7xl w-full mx-auto">
+        &copy; {new Date().getFullYear()} RoomMatch Prague. All rights reserved.
+      </footer>
     </div>
   );
 }
