@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { useAuth, UserButton } from "@clerk/nextjs";
 
 export default function HomePage() {
+  const { isSignedIn } = useAuth();
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
       {/* NAVBAR */}
@@ -19,22 +23,25 @@ export default function HomePage() {
           >
             Browse Listings
           </Link>
-          <SignedIn>
+
+          {isSignedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
+              >
+                Dashboard
+              </Link>
+              <UserButton />
+            </>
+          ) : (
             <Link
-              href="/dashboard"
-              className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
+              href="/sign-in"
+              className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm"
             >
-              Dashboard
+              Sign In
             </Link>
-            <UserButton />
-          </SignedIn>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm">
-                Sign In
-              </button>
-            </SignInButton>
-          </SignedOut>
+          )}
         </nav>
       </header>
 
@@ -114,11 +121,12 @@ export default function HomePage() {
             Join our community today and secure your stay in Prague with the
             right flatmate.
           </p>
-          <SignInButton mode="modal">
-            <button className="bg-white text-indigo-900 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition shadow-md">
-              Get Started Now
-            </button>
-          </SignInButton>
+          <Link
+            href={isSignedIn ? "/dashboard" : "/sign-in"}
+            className="bg-white text-indigo-900 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition shadow-md inline-block"
+          >
+            Get Started Now
+          </Link>
         </div>
       </main>
 
