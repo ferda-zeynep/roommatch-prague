@@ -3,28 +3,46 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createListingAction } from "./actions";
 
 export default function CreateListingPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     district: "Prague 2",
-    price: "",
+    rent: "",
     roomType: "Private Room",
     lifestyle: "",
+    description: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    console.log("Submitted Data: ", formData);
-    alert("Listing created successfully! (Mock)");
-    router.push("/listings");
+    try {
+      await createListingAction({
+        title: formData.title,
+        district: formData.district,
+        rent: Number(formData.rent),
+        roomType: formData.roomType,
+        lifestyle: formData.lifestyle,
+        description: formData.description,
+      });
+
+      alert("Listing created successfully! 🎉");
+      router.push("/listings");
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
-      {/* NAVBAR */}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center max-w-7xl w-full mx-auto rounded-b-xl shadow-sm">
         <Link
           href="/"
@@ -42,7 +60,6 @@ export default function CreateListingPage() {
         </nav>
       </header>
 
-      {/* MAIN FORM */}
       <main className="flex-1 max-w-2xl w-full mx-auto px-6 py-12">
         <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
           <h1 className="text-2xl font-extrabold text-slate-900 mb-2">
@@ -54,7 +71,6 @@ export default function CreateListingPage() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* TITLE */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Listing Title
@@ -71,7 +87,22 @@ export default function CreateListingPage() {
               />
             </div>
 
-            {/* DISTRICT & PRICE */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Description
+              </label>
+              <textarea
+                required
+                rows={3}
+                placeholder="Describe the room, utilities, and what you are looking for in a roommate..."
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 transition text-sm bg-slate-50"
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -102,16 +133,15 @@ export default function CreateListingPage() {
                   type="number"
                   required
                   placeholder="e.g., 15000"
-                  value={formData.price}
+                  value={formData.rent}
                   onChange={(e) =>
-                    setFormData({ ...formData, price: e.target.value })
+                    setFormData({ ...formData, rent: e.target.value })
                   }
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-500 transition text-sm bg-slate-50"
                 />
               </div>
             </div>
 
-            {/* ROOM TYPE */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Room Type
@@ -129,7 +159,6 @@ export default function CreateListingPage() {
               </select>
             </div>
 
-            {/* LIFESTYLE / HABITS */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Lifestyle Tags (Habits)
@@ -145,18 +174,17 @@ export default function CreateListingPage() {
               />
             </div>
 
-            {/* SUBMIT BUTTON */}
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition shadow-md mt-4 text-sm"
+              disabled={loading}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition shadow-md mt-4 text-sm disabled:bg-indigo-400"
             >
-              Publish Listing
+              {loading ? "Publishing..." : "Publish Listing"}
             </button>
           </form>
         </div>
       </main>
 
-      {/* FOOTER */}
       <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 max-w-7xl w-full mx-auto">
         &copy; {new Date().getFullYear()} RoomMatch Prague. All rights reserved.
       </footer>
