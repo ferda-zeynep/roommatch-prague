@@ -51,7 +51,6 @@ export default function ListingsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
-      {/* NAVBAR */}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center max-w-7xl w-full mx-auto rounded-b-xl shadow-sm">
         <Link
           href="/"
@@ -69,7 +68,6 @@ export default function ListingsPage() {
         </nav>
       </header>
 
-      {/* MAIN CONTENT */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12">
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold text-slate-900 mb-2">
@@ -81,7 +79,6 @@ export default function ListingsPage() {
           </p>
         </div>
 
-        {/* FILTERS SECTION */}
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap gap-4 items-center">
           <span className="text-sm font-semibold text-slate-700">
             Filter by District:
@@ -101,7 +98,6 @@ export default function ListingsPage() {
           ))}
         </div>
 
-        {/* LISTINGS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredListings.map((listing) => (
             <div
@@ -155,7 +151,6 @@ export default function ListingsPage() {
         </div>
       </main>
 
-      {/* FOOTER */}
       <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 max-w-7xl w-full mx-auto">
         &copy; {new Date().getFullYear()} RoomMatch Prague. All rights reserved.
       </footer>
