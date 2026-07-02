@@ -16,7 +16,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      {/* DASHBOARD NAVBAR */}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center max-w-7xl w-full mx-auto rounded-b-xl shadow-sm">
         <Link
           href="/"
@@ -39,9 +38,7 @@ export default function DashboardPage() {
         </nav>
       </header>
 
-      {/* MAIN CONTENT */}
       <main className="max-w-7xl w-full mx-auto px-6 py-12">
-        {/* WELCOME BANNER */}
         <div className="bg-gradient-to-r from-indigo-600 to-indigo-900 text-white rounded-3xl p-8 shadow-lg mb-8">
           <h1 className="text-2xl md:text-4xl font-bold mb-2">
             Welcome back, {user?.firstName || "RoomMatcher"}! 👋
@@ -52,9 +49,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* QUICK STATS & LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* LEFT: USER PROFILE SUMMARY */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center text-center">
             <img
               src={user?.imageUrl}
@@ -74,7 +69,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* RIGHT: MY LISTINGS & ACTIONS */}
           <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold text-slate-800">
@@ -88,7 +82,6 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            {/* EMPTY STATE (Kullanıcının henüz ilanı yoksa) */}
             <div className="border-2 border-dashed border-slate-200 rounded-xl p-12 text-center">
               <div className="text-4xl mb-4">🏠</div>
               <h4 className="text-base font-semibold text-slate-700 mb-1">
