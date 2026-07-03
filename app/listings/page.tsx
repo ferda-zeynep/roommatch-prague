@@ -55,14 +55,23 @@ export default function ListingsPage() {
       </header>
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-slate-900 mb-2">
-            Available Rooms & Roommates
-          </h1>
-          <p className="text-slate-600">
-            Find accommodation and compatible flatmates across Prague's best
-            districts.
-          </p>
+        <div className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold text-slate-900 mb-2">
+              Available Rooms & Roommates
+            </h1>
+            <p className="text-slate-600">
+              Find accommodation and compatible flatmates across Prague's best
+              districts.
+            </p>
+          </div>
+
+          {!loading && (
+            <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl text-sm font-medium text-indigo-700 self-start md:self-auto">
+              Total Found:{" "}
+              <span className="font-bold">{filteredListings.length}</span>
+            </div>
+          )}
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap gap-4 items-center">
