@@ -65,7 +65,6 @@ export default function ListingsPage() {
               districts.
             </p>
           </div>
-
           {!loading && (
             <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl text-sm font-medium text-indigo-700 self-start md:self-auto">
               Total Found:{" "}
@@ -100,8 +99,21 @@ export default function ListingsPage() {
             Loading listings...
           </div>
         ) : filteredListings.length === 0 ? (
-          <div className="text-center py-12 text-slate-500 bg-white border border-slate-200 rounded-2xl shadow-sm">
-            No active listings found for this selection.
+          /* YENİ DOKUNUŞ: Boş sayfaya buton ekledik */
+          <div className="text-center py-16 text-slate-500 bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col items-center justify-center p-8">
+            <div className="text-5xl mb-4">✨</div>
+            <h3 className="text-lg font-bold text-slate-800 mb-1">
+              No active listings yet
+            </h3>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">
+              Be the first one to share a room or find a roommate in Prague!
+            </p>
+            <Link
+              href="/listings/create"
+              className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-indigo-700 transition shadow-md"
+            >
+              + Create First Listing
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
