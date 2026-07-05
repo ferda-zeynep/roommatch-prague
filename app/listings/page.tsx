@@ -66,36 +66,46 @@ export default function ListingsPage() {
             </p>
           </div>
           {!loading && (
-            <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl text-sm font-medium text-indigo-700 self-start md:self-auto">
+            <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl text-sm font-medium text-indigo-700 self-start md:self-auto flex items-center gap-2">
               Total Found:{" "}
               <span className="font-bold">{filteredListings.length}</span>
             </div>
           )}
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap gap-4 items-center">
-          <span className="text-sm font-semibold text-slate-700">
-            Filter by District:
-          </span>
-          {["All", "Prague 1", "Prague 2", "Prague 3", "Prague 7"].map(
-            (district) => (
-              <button
-                key={district}
-                onClick={() => setSelectedDistrict(district)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
-                  selectedDistrict === district
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
-              >
-                {district}
-              </button>
-            ),
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap gap-4 items-center justify-between">
+          <div className="flex flex-wrap gap-4 items-center">
+            <span className="text-sm font-semibold text-slate-700">
+              Filter by District:
+            </span>
+            {["All", "Prague 1", "Prague 2", "Prague 3", "Prague 7"].map(
+              (district) => (
+                <button
+                  key={district}
+                  onClick={() => setSelectedDistrict(district)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
+                    selectedDistrict === district
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  {district}
+                </button>
+              ),
+            )}
+          </div>
+
+          {selectedDistrict !== "All" && (
+            <button
+              onClick={() => setSelectedDistrict("All")}
+              className="text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-lg transition"
+            >
+              Reset Filter ✕
+            </button>
           )}
         </div>
 
         {loading ? (
-          /* SKELETON LOADER ANIMASYONU */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((n) => (
               <div
