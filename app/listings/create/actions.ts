@@ -12,23 +12,28 @@ export async function createListingAction(formData: {
   lifestyle: string;
   description: string;
 }) {
-  const { userId } = await auth();
+  try {
+    const { userId } = await auth();
 
-  if (!userId) {
-    throw new Error("Unauthorized! You must be logged in.");
+    if (!userId) {
+      throw new Error("Unauthorized! You must be logged in.");
+    }
+
+    await prisma.listing.create({
+      data: {
+        title: formData.title,
+        district: formData.district,
+        rent: formData.rent,
+        roomType: formData.roomType,
+        lifestyle: formData.lifestyle,
+        description: formData.description,
+        userId: userId,
+      },
+    });
+
+    revalidatePath("/listings");
+  } catch (error) {
+    console.error("Failed to create listing:", error);
+    throw new Error("Could not save listing to database.");
   }
-
-  await prisma.listing.create({
-    data: {
-      title: formData.title,
-      district: formData.district,
-      rent: formData.rent,
-      roomType: formData.roomType,
-      lifestyle: formData.lifestyle,
-      description: formData.description,
-      userId: userId,
-    },
-  });
-
-  revalidatePath("/listings");
 }
