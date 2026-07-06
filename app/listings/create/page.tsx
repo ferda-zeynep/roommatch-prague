@@ -8,6 +8,7 @@ import { createListingAction } from "./actions";
 export default function CreateListingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     district: "Prague 2",
@@ -31,15 +32,35 @@ export default function CreateListingPage() {
         description: formData.description,
       });
 
-      alert("Listing created successfully! 🎉");
-      router.push("/listings");
+      setIsSuccess(true);
+      setTimeout(() => {
+        router.push("/listings");
+      }, 1500);
     } catch (error) {
       console.error(error);
       alert("Something went wrong!");
-    } finally {
       setLoading(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm max-w-sm w-full space-y-4">
+          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto animate-bounce">
+            ✓
+          </div>
+          <h2 className="text-xl font-extrabold text-slate-900">
+            Listing Published!
+          </h2>
+          <p className="text-sm text-slate-500">
+            Your roommate listing in Prague has been successfully saved to the
+            database.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
@@ -177,8 +198,11 @@ export default function CreateListingPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition shadow-md mt-4 text-sm disabled:bg-indigo-400"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition shadow-md mt-4 text-sm disabled:bg-indigo-400 flex items-center justify-center gap-2"
             >
+              {loading && (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              )}
               {loading ? "Publishing..." : "Publish Listing"}
             </button>
           </form>
