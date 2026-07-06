@@ -35,6 +35,11 @@ export default function ListingsPage() {
       ? listings
       : listings.filter((l) => l.district === selectedDistrict);
 
+  const getCountByDistrict = (district: string) => {
+    if (district === "All") return listings.length;
+    return listings.filter((l) => l.district === district).length;
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center max-w-7xl w-full mx-auto rounded-b-xl shadow-sm">
@@ -89,7 +94,7 @@ export default function ListingsPage() {
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
-                  {district}
+                  {district} ({getCountByDistrict(district)})
                 </button>
               ),
             )}
