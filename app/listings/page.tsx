@@ -13,6 +13,7 @@ interface ListingItem {
   roomType: string;
   lifestyle: string;
   imageUrl?: string | null;
+  createdAt: Date;
 }
 
 export default function ListingsPage() {
@@ -24,7 +25,12 @@ export default function ListingsPage() {
   useEffect(() => {
     async function loadListings() {
       const data = await getListingsAction();
-      setListings(data);
+
+      const formattedData = data.map((item: any) => ({
+        ...item,
+        createdAt: new Date(item.createdAt),
+      }));
+      setListings(formattedData);
       setLoading(false);
     }
     loadListings();
@@ -174,19 +180,30 @@ export default function ListingsPage() {
                       {listing.lifestyle || "No specific lifestyle tags"}
                     </p>
                   </div>
-                  <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
-                    <div>
-                      <span className="text-lg font-extrabold text-indigo-600">
-                        {listing.rent} CZK
-                      </span>
-                      <span className="text-xs text-slate-500"> / month</span>
+                  <div className="border-t border-slate-100 pt-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="text-lg font-extrabold text-indigo-600">
+                          {listing.rent} CZK
+                        </span>
+                        <span className="text-xs text-slate-500"> / month</span>
+                      </div>
+                      <Link
+                        href={`/listings/${listing.id}`}
+                        className="text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 px-3 py-2 rounded-lg transition"
+                      >
+                        View Details
+                      </Link>
                     </div>
-                    <Link
-                      href={`/listings/${listing.id}`}
-                      className="text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 px-3 py-2 rounded-lg transition"
-                    >
-                      View Details
-                    </Link>
+                    {/* YENİ DOKUNUŞ: Eklenme tarihini gösteren şık minimalist alan */}
+                    <div className="text-[10px] text-slate-400 text-right">
+                      Added on{" "}
+                      {listing.createdAt.toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
