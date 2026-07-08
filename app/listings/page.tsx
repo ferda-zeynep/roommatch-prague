@@ -36,17 +36,15 @@ export default function ListingsPage() {
     loadListings();
   }, []);
 
-  // Önce bölgeye göre filtrele
   const filteredListings =
     selectedDistrict === "All"
       ? listings
       : listings.filter((l) => l.district === selectedDistrict);
 
-  // Sonra seçilen kritere göre sırala
   const sortedListings = [...filteredListings].sort((a, b) => {
     if (sortBy === "price-low") return a.rent - b.rent;
     if (sortBy === "price-high") return b.rent - a.rent;
-    return b.createdAt.getTime() - a.createdAt.getTime(); // newest
+    return b.createdAt.getTime() - a.createdAt.getTime();
   });
 
   const getCountByDistrict = (district: string) => {
@@ -182,6 +180,11 @@ export default function ListingsPage() {
                     alt={listing.title}
                     className="w-full h-full object-cover"
                   />
+                  <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg tracking-wide uppercase">
+                    {listing.roomType === "Entire Flat"
+                      ? "Entire Flat"
+                      : "Looking for Roommate"}
+                  </div>
                 </div>
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
