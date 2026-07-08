@@ -19,13 +19,13 @@ interface ListingItem {
 export default function ListingsPage() {
   const { isSignedIn } = useAuth();
   const [selectedDistrict, setSelectedDistrict] = useState("All");
+  const [sortBy, setSortBy] = useState("newest");
   const [listings, setListings] = useState<ListingItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadListings() {
       const data = await getListingsAction();
-
       const formattedData = data.map((item: any) => ({
         ...item,
         createdAt: new Date(item.createdAt),
@@ -36,10 +36,18 @@ export default function ListingsPage() {
     loadListings();
   }, []);
 
+  // Önce bölgeye göre filtrele
   const filteredListings =
     selectedDistrict === "All"
       ? listings
       : listings.filter((l) => l.district === selectedDistrict);
+
+  // Sonra seçilen kritere göre sırala
+  const sortedListings = [...filteredListings].sort((a, b) => {
+    if (sortBy === "price-low") return a.rent - b.rent;
+    if (sortBy === "price-high") return b.rent - a.rent;
+    return b.createdAt.getTime() - a.createdAt.getTime(); // newest
+  });
 
   const getCountByDistrict = (district: string) => {
     if (district === "All") return listings.length;
@@ -79,12 +87,12 @@ export default function ListingsPage() {
           {!loading && (
             <div className="bg-indigo-50 border border-indigo-100 px-4 py-2 rounded-xl text-sm font-medium text-indigo-700 self-start md:self-auto flex items-center gap-2">
               Total Found:{" "}
-              <span className="font-bold">{filteredListings.length}</span>
+              <span className="font-bold">{sortedListings.length}</span>
             </div>
           )}
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-wrap gap-4 items-center justify-between">
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex flex-wrap gap-4 items-center">
             <span className="text-sm font-semibold text-slate-700">
               Filter by District:
@@ -106,14 +114,26 @@ export default function ListingsPage() {
             )}
           </div>
 
-          {selectedDistrict !== "All" && (
-            <button
-              onClick={() => setSelectedDistrict("All")}
-              className="text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-lg transition"
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="text-sm font-medium text-slate-600 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 transition"
             >
-              Reset Filter ✕
-            </button>
-          )}
+              <option value="newest">Newest Listed</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+
+            {selectedDistrict !== "All" && (
+              <button
+                onClick={() => setSelectedDistrict("All")}
+                className="text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-lg transition shrink-0"
+              >
+                Reset Filter ✕
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
@@ -130,7 +150,7 @@ export default function ListingsPage() {
               </div>
             ))}
           </div>
-        ) : filteredListings.length === 0 ? (
+        ) : sortedListings.length === 0 ? (
           <div className="text-center py-16 text-slate-500 bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col items-center justify-center p-8">
             <div className="text-5xl mb-4">✨</div>
             <h3 className="text-lg font-bold text-slate-800 mb-1">
@@ -148,7 +168,7 @@ export default function ListingsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredListings.map((listing) => (
+            {sortedListings.map((listing) => (
               <div
                 key={listing.id}
                 className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col"
@@ -195,7 +215,6 @@ export default function ListingsPage() {
                         View Details
                       </Link>
                     </div>
-                    {/* YENİ DOKUNUŞ: Eklenme tarihini gösteren şık minimalist alan */}
                     <div className="text-[10px] text-slate-400 text-right">
                       Added on{" "}
                       {listing.createdAt.toLocaleDateString("en-US", {
