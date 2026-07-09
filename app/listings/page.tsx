@@ -234,8 +234,9 @@ export default function ListingsPage() {
         )}
       </main>
 
-      <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 max-w-7xl w-full mx-auto">
-        &copy; {new Date().getFullYear()} RoomMatch Prague. All rights reserved.
+      <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-400 max-w-7xl w-full mx-auto mt-8 hover:text-slate-600 transition duration-300">
+        &copy; {new Date().getFullYear()} RoomMatch Prague. Built
+        professionally.
       </footer>
     </div>
   );
