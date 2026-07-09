@@ -15,3 +15,23 @@ export async function getListingsAction() {
     return [];
   }
 }
+
+export async function getListingByIdAction(id: string) {
+  try {
+    const listing = await prisma.listing.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            fullName: true,
+            clerkId: true,
+          },
+        },
+      },
+    });
+    return listing;
+  } catch (error) {
+    console.error("Failed to fetch listing details:", error);
+    return null;
+  }
+}
