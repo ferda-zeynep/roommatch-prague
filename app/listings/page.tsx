@@ -211,6 +211,7 @@ export default function ListingsPage() {
                         </span>
                         <span className="text-xs text-slate-500"> / month</span>
                       </div>
+
                       <Link
                         href={`/listings/${listing.id}`}
                         className="text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 px-3 py-2 rounded-lg transition"
