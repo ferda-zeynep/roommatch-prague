@@ -9,6 +9,8 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export async function getListingsAction() {
   try {
+    revalidatePath("/listings");
+
     const dbListings = await prisma.listing.findMany({
       orderBy: { createdAt: "desc" },
     });
