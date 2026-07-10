@@ -27,8 +27,9 @@ export default function ListingsPage() {
   const [listings, setListings] = useState<ListingItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Advanced search and micro-filter states for Prague student market
+  // Search and advanced filter states
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("All");
   const [maxBudget, setMaxBudget] = useState(30000);
   const [sortBy, setSortBy] = useState("newest");
@@ -36,7 +37,7 @@ export default function ListingsPage() {
   const [petsAllowed, setPetsAllowed] = useState(false);
   const [isFurnished, setIsFurnished] = useState(false);
 
-  // Local state tracking for client-side optimistic bookmark UI
+  // Client-side optimistic bookmark tracking state
   const [savedIds, setSavedIds] = useState<string[]>([]);
 
   const pragueDistricts = [
@@ -49,6 +50,24 @@ export default function ListingsPage() {
     "Prague 2",
     "Prague 3",
   ];
+  const quickSearchTags = [
+    "Studio",
+    "2+kk",
+    "Shared room",
+    "Balcony",
+    "Furnished",
+  ];
+
+  // Custom debouncing effect to optimize render execution cycles during typing
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
 
   useEffect(() => {
     async function loadListings() {
@@ -76,11 +95,16 @@ export default function ListingsPage() {
     );
   };
 
-  // Complex multi-layer client-side filtering matching high-agency user demands
+  // Complex multi-layer architectural layout filters matching high-agency user profiles
   const filteredListings = listings.filter((item) => {
     const matchesSearch =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.lifestyle.toLowerCase().includes(searchQuery.toLowerCase());
+      item.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+      item.lifestyle
+        .toLowerCase()
+        .includes(debouncedSearchQuery.toLowerCase()) ||
+      item.description
+        .toLowerCase()
+        .includes(debouncedSearchQuery.toLowerCase());
     const matchesDistrict =
       selectedDistrict === "All" || item.district === selectedDistrict;
     const matchesBudget = item.rent <= maxBudget;
@@ -106,11 +130,10 @@ export default function ListingsPage() {
 
   const savedListings = listings.filter((item) => savedIds.includes(item.id));
   const userOwnedListings = listings.slice(0, 2);
+
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center items-start sm:py-8 font-sans">
-      {/* Mobile Device Viewport Frame Simulator */}
       <div className="w-full max-w-md bg-slate-50 min-h-screen sm:min-h-[850px] sm:rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden relative border border-slate-200">
-        {/* Sticky Mobile Header App Bar */}
         <header className="bg-white border-b border-slate-100 px-4 py-3 flex justify-between items-center sticky top-0 z-40">
           <div>
             <span className="text-xs font-bold text-indigo-600 block tracking-wider uppercase">
@@ -126,22 +149,35 @@ export default function ListingsPage() {
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>
         </header>
 
-        {/* Dynamic Tab Switcher Main Context Stream */}
         <main className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-24">
-          {/* TAB: EXPLORE VIEW */}
           {activeTab === "explore" && (
             <>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
-                  🔍
-                </span>
-                <input
-                  type="text"
-                  placeholder="Search rooms, flats, keywords..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white pl-9 pr-4 py-2.5 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:border-indigo-500 transition shadow-sm"
-                />
+              {/* Debounced Input Wrapper */}
+              <div className="space-y-2">
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
+                    🔍
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search rooms, flats, keywords..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-white pl-9 pr-4 py-2.5 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:border-indigo-500 transition shadow-sm"
+                  />
+                </div>
+                {/* Horizontal Quick-Tags Container */}
+                <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                  {quickSearchTags.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setSearchQuery(tag)}
+                      className="px-2.5 py-1 bg-slate-200/60 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 text-[10px] font-bold rounded-lg transition whitespace-nowrap"
+                    >
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-1.5">
@@ -231,7 +267,6 @@ export default function ListingsPage() {
             </>
           )}
 
-          {/* TAB: SAVED LISTINGS VIEW */}
           {activeTab === "saved" && (
             <div className="space-y-3">
               <p className="text-xs text-slate-500 px-1">
@@ -255,7 +290,6 @@ export default function ListingsPage() {
             </div>
           )}
 
-          {/* TAB: LANDLORD / OWNER MANAGEMENT DASHBOARD */}
           {activeTab === "dashboard" && (
             <div className="space-y-4">
               <div className="flex justify-between items-center px-1">
@@ -300,7 +334,6 @@ export default function ListingsPage() {
                       </div>
                     </div>
 
-                    {/* Live Product Operations Controls (Edit / Delete UI Bridges) */}
                     <div className="flex justify-end gap-2 border-t border-slate-50 pt-3">
                       <button className="text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition">
                         Edit Listing
@@ -315,7 +348,6 @@ export default function ListingsPage() {
             </div>
           )}
 
-          {/* TAB: SYSTEM ACCOUNT AND PREFERENCES */}
           {activeTab === "profile" && (
             <div className="space-y-4">
               <div className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
@@ -354,7 +386,6 @@ export default function ListingsPage() {
           )}
         </main>
 
-        {/* Native-like Persistent Mobile Bottom Navigation Bar Interface */}
         <div className="absolute bottom-0 inset-x-0 bg-white/90 backdrop-blur-md border-t border-slate-100 h-16 flex justify-around items-center px-4 z-40">
           <button
             onClick={() => setActiveTab("explore")}
