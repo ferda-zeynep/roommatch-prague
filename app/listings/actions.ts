@@ -9,12 +9,9 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export async function getListingsAction() {
   try {
-    const listings = await prisma.listing.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
+    return await prisma.listing.findMany({
+      orderBy: { createdAt: "desc" },
     });
-    return listings;
   } catch (error) {
     console.error("Failed to fetch listings:", error);
     return [];
@@ -23,10 +20,9 @@ export async function getListingsAction() {
 
 export async function getListingByIdAction(id: string) {
   try {
-    const listing = await prisma.listing.findUnique({
+    return await prisma.listing.findUnique({
       where: { id },
     });
-    return listing;
   } catch (error) {
     console.error("Failed to fetch listing details:", error);
     return null;
@@ -40,6 +36,9 @@ export async function createListingAction(formData: {
   roomType: string;
   lifestyle: string;
   description: string;
+  isFurnished?: boolean;
+  petsAllowed?: boolean;
+  nearMetro?: boolean;
 }) {
   try {
     const { userId } = await auth();
@@ -54,6 +53,9 @@ export async function createListingAction(formData: {
         lifestyle: formData.lifestyle,
         description: formData.description,
         userId: userId,
+        isFurnished: formData.isFurnished ?? true,
+        petsAllowed: formData.petsAllowed ?? true,
+        nearMetro: formData.nearMetro ?? true,
       },
     });
     revalidatePath("/listings");
