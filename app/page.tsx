@@ -1,139 +1,98 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth, UserButton } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
-export default function HomePage() {
+export default function MobileLandingPage() {
   const { isSignedIn } = useAuth();
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between">
-      {/* NAVBAR */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center max-w-7xl w-full mx-auto rounded-b-xl shadow-sm">
-        <Link
-          href="/"
-          className="text-xl font-bold text-indigo-600 tracking-tight"
-        >
-          RoomMatch <span className="text-slate-700">Prague</span>
-        </Link>
-        <nav className="flex items-center gap-4">
-          <Link
-            href="/listings"
-            className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
-          >
-            Browse Listings
-          </Link>
+    <div className="min-h-screen bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-900 flex justify-center items-start sm:py-8 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+      {/* Premium Unified Mobile Viewport Frame */}
+      <div className="w-full max-w-md bg-slate-950 min-h-screen sm:min-h-[850px] sm:rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden relative border border-slate-800/80 shadow-indigo-500/10">
+        {/* Background Visual Gradients */}
+        <div className="absolute top-[-20%] left-[-20%] w-72 h-72 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-72 h-72 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-          {isSignedIn ? (
-            <>
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition"
-              >
-                Dashboard
-              </Link>
-              <UserButton />
-            </>
-          ) : (
-            <Link
-              href="/sign-in"
-              className="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition shadow-sm"
-            >
-              Sign In
-            </Link>
-          )}
-        </nav>
-      </header>
+        {/* Top Minimal Bar */}
+        <header className="px-6 pt-6 flex justify-between items-center z-10">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+              Prague Live
+            </span>
+          </div>
+          <span className="text-[10px] font-bold bg-slate-800/80 backdrop-blur-md text-indigo-400 px-2.5 py-1 rounded-full border border-slate-700/50">
+            v1.0-pwa
+          </span>
+        </header>
 
-      {/* HERO SECTION */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-16 flex flex-col items-center justify-center text-center">
-        <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
-            Find Your Perfect Roommate in{" "}
-            <span className="text-indigo-600">Prague</span>
-          </h1>
-          <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-            Connect with students and young professionals relocating to Prague.
-            Match by budget, district, and lifestyle choices seamlessly.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
+        {/* Core Hero Branding Area */}
+        <main className="flex-1 flex flex-col justify-center px-6 text-center space-y-8 z-10 my-auto">
+          <div className="space-y-3">
+            {/* Soft Premium Micro-Badge */}
+            <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full text-[11px] font-semibold text-indigo-300 mx-auto">
+              ✨ Engineered for Erasmus & Expats
+            </div>
+
+            <h1 className="text-4xl font-black text-white tracking-tight leading-none pt-2">
+              RoomMatch <br />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-emerald-400">
+                Prague
+              </span>
+            </h1>
+
+            <p className="text-slate-400 text-sm max-w-xs mx-auto font-medium leading-relaxed">
+              Find verified flatshares, compatible student lifestyles, and
+              dynamic flatmate matches close to your faculty.
+            </p>
+          </div>
+
+          {/* Premium UI Mockup Elements inside Landing */}
+          <div className="bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl rounded-2xl p-4 max-w-xs mx-auto space-y-3 text-left shadow-xl shadow-black/40">
+            <div className="flex justify-between items-center text-[10px] font-bold text-indigo-400 uppercase">
+              <span>📍 Prague 2 (Vinohrady)</span>
+              <span className="bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded">
+                94% Match
+              </span>
+            </div>
+            <div className="text-xs font-bold text-white truncate">
+              Cozy Studio Flat near Náměstí Míru
+            </div>
+            <div className="flex justify-between items-center pt-1 border-t border-slate-800/60">
+              <span className="text-xs font-black text-white">15,500 CZK</span>
+              <span className="text-[9px] text-slate-500 font-medium">
+                🚇 Metro A reachable
+              </span>
+            </div>
+          </div>
+
+          {/* Call To Actions */}
+          <div className="flex flex-col gap-3 max-w-xs w-full mx-auto pt-4">
             <Link
               href="/listings"
-              className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition shadow-md"
+              className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3.5 rounded-xl transition text-sm shadow-lg shadow-indigo-950/50 active:scale-[0.99] text-center block"
             >
-              Browse Listings
+              Browse Live Listings
             </Link>
+
             <Link
-              href="/listings/create"
-              className="bg-white border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-medium hover:bg-slate-50 transition shadow-sm"
+              href={isSignedIn ? "/listings" : "/sign-in"}
+              className="w-full bg-slate-900/80 hover:bg-slate-800/80 text-slate-300 border border-slate-800 font-bold py-3.5 rounded-xl transition text-sm active:scale-[0.99] text-center block backdrop-blur-md"
             >
-              Create Listing
+              {isSignedIn ? "Go to App Dashboard" : "Sign In / Register"}
             </Link>
           </div>
-        </div>
+        </main>
 
-        {/* FEATURES SECTION */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 w-full">
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-left">
-            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4 font-bold text-lg">
-              ✓
-            </div>
-            <h3 className="text-lg font-bold mb-2 text-slate-800">
-              Verified Profiles
-            </h3>
-            <p className="text-slate-600 text-sm">
-              Secure verification ensures you are browsing and talking to real
-              people moving to Prague.
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-left">
-            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4 font-bold text-lg">
-              ⚙
-            </div>
-            <h3 className="text-lg font-bold mb-2 text-slate-800">
-              Smart Filtering
-            </h3>
-            <p className="text-slate-600 text-sm">
-              Filter listings by rent, precise Prague districts, room types, and
-              specific habits.
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-left">
-            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4 font-bold text-lg">
-              ⚡
-            </div>
-            <h3 className="text-lg font-bold mb-2 text-slate-800">
-              Match Scoring
-            </h3>
-            <p className="text-slate-600 text-sm">
-              See your lifestyle compatibility percentage instantly next to
-              every potential listing.
-            </p>
-          </div>
-        </div>
-
-        {/* CTA SECTION */}
-        <div className="bg-indigo-900 text-white rounded-3xl p-12 mt-24 text-center w-full shadow-xl relative overflow-hidden">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
-            Ready to find your next roommate?
-          </h2>
-          <p className="text-indigo-200 mb-6 max-w-md mx-auto text-sm md:text-base">
-            Join our community today and secure your stay in Prague with the
-            right flatmate.
+        {/* Minimal Mobile-first Footer */}
+        <footer className="px-6 pb-6 text-center z-10">
+          <p className="text-[10px] text-slate-600 font-semibold tracking-wide uppercase">
+            &copy; {new Date().getFullYear()} RoomMatch Prague • Built
+            Professionally
           </p>
-          <Link
-            href={isSignedIn ? "/dashboard" : "/sign-in"}
-            className="bg-white text-indigo-900 px-6 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition shadow-md inline-block"
-          >
-            Get Started Now
-          </Link>
-        </div>
-      </main>
-
-      {/* FOOTER */}
-      <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 max-w-7xl w-full mx-auto">
-        &copy; {new Date().getFullYear()} RoomMatch Prague. All rights reserved.
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
