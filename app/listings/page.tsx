@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
-import { getListingsAction } from "./actions";
+import { useAuth, SignOutButton } from "@clerk/nextjs";
+import {
+  getListingsAction,
+  toggleFavoriteAction,
+  getUserFavoritesAction,
+  deleteListingAction,
+} from "./actions";
 
 interface ListingItem {
   id: string;
@@ -26,20 +31,18 @@ export default function ListingsPage() {
     "explore" | "saved" | "profile" | "dashboard"
   >("explore");
   const [listings, setListings] = useState<ListingItem[]>([]);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Search and advanced filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("All");
   const [maxBudget, setMaxBudget] = useState(30000);
   const [sortBy, setSortBy] = useState("newest");
+
   const [nearMetro, setNearMetro] = useState(false);
   const [petsAllowed, setPetsAllowed] = useState(false);
   const [isFurnished, setIsFurnished] = useState(false);
-
-  // Client-side optimistic bookmark tracking state
-  const [savedIds, setSavedIds] = useState<string[]>([]);
 
   const pragueDistricts = [
     "All",
@@ -59,53 +62,67 @@ export default function ListingsPage() {
     "Furnished",
   ];
 
-  // Custom debouncing effect to optimize render execution cycles during typing
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
     }, 300);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [searchQuery]);
 
   useEffect(() => {
-    async function loadListings() {
-      const data = await getListingsAction();
-      const formattedData = data.map((item: any) => ({
-        ...item,
-        createdAt: new Date(item.createdAt),
-        isFurnished: item.isFurnished ?? true,
-        petsAllowed:
-          item.petsAllowed ?? item.id.charCodeAt(item.id.length - 1) % 2 === 0,
-        nearMetro:
-          item.nearMetro ?? item.id.charCodeAt(item.id.length - 1) % 3 === 0,
-      }));
-      setListings(formattedData);
-      setLoading(false);
+    async function initPlatformData() {
+      try {
+        const [allListings, dbFavorites] = await Promise.all([
+          getListingsAction(),
+          getUserFavoritesAction(),
+        ]);
+
+        const formattedData = allListings.map((item: any) => ({
+          ...item,
+          createdAt: new Date(item.createdAt),
+          isFurnished: item.isFurnished ?? true,
+          petsAllowed: item.petsAllowed ?? true,
+          nearMetro: item.nearMetro ?? true,
+        }));
+
+        setListings(formattedData);
+        setSavedIds(dbFavorites);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     }
-    loadListings();
+    initPlatformData();
   }, []);
 
-  const toggleSaveListing = (id: string, e: React.MouseEvent) => {
+  const handleFavoriteToggle = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
     setSavedIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
+
+    try {
+      await toggleFavoriteAction(id);
+    } catch (err) {
+      setSavedIds((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+      );
+      alert("Synchronization warning with cloud infrastructure.");
+    }
   };
 
-  // Complex multi-layer architectural layout filters matching high-agency user profiles
   const filteredListings = listings.filter((item) => {
+    const query = debouncedSearchQuery.toLowerCase();
     const matchesSearch =
-      item.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-      item.lifestyle
-        .toLowerCase()
-        .includes(debouncedSearchQuery.toLowerCase()) ||
-      item.description
-        .toLowerCase()
-        .includes(debouncedSearchQuery.toLowerCase());
+      item.title.toLowerCase().includes(query) ||
+      item.lifestyle.toLowerCase().includes(query) ||
+      item.description.toLowerCase().includes(query) ||
+      item.district.toLowerCase().includes(query) ||
+      item.roomType.toLowerCase().includes(query);
+
     const matchesDistrict =
       selectedDistrict === "All" || item.district === selectedDistrict;
     const matchesBudget = item.rent <= maxBudget;
@@ -130,7 +147,7 @@ export default function ListingsPage() {
   });
 
   const savedListings = listings.filter((item) => savedIds.includes(item.id));
-  const userOwnedListings = listings.slice(0, 2);
+  const userOwnedListings = listings.slice(0, 1);
 
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center items-start sm:py-8 font-sans">
@@ -143,8 +160,8 @@ export default function ListingsPage() {
             <h1 className="text-lg font-black text-slate-900 tracking-tight">
               {activeTab === "explore" && "RoomMatch"}
               {activeTab === "saved" && "Saved Rooms"}
-              {activeTab === "profile" && "Account Dashboard"}
-              {activeTab === "dashboard" && "My Listings"}
+              {activeTab === "profile" && "Profile & Settings"}
+              {activeTab === "dashboard" && "My Advertisements"}
             </h1>
           </div>
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></span>
@@ -153,7 +170,6 @@ export default function ListingsPage() {
         <main className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-24">
           {activeTab === "explore" && (
             <>
-              {/* Debounced Input Wrapper */}
               <div className="space-y-2">
                 <div className="relative">
                   <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 text-sm">
@@ -167,7 +183,6 @@ export default function ListingsPage() {
                     className="w-full bg-white pl-9 pr-4 py-2.5 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:border-indigo-500 transition shadow-sm"
                   />
                 </div>
-                {/* Horizontal Quick-Tags Container */}
                 <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
                   {quickSearchTags.map((tag) => (
                     <button
@@ -220,26 +235,36 @@ export default function ListingsPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-50">
+                <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-slate-50">
                   <button
                     onClick={() => setNearMetro(!nearMetro)}
-                    className={`p-2 rounded-xl text-left border transition text-xs flex items-center justify-between ${
+                    className={`p-2 rounded-xl text-center border transition text-[11px] font-bold ${
                       nearMetro
-                        ? "border-indigo-600 bg-indigo-50/50 text-indigo-700 font-bold"
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
                         : "border-slate-200 text-slate-600 bg-slate-50"
                     }`}
                   >
-                    <span>🚇 Near Metro</span>
+                    🚇 Metro
                   </button>
                   <button
                     onClick={() => setPetsAllowed(!petsAllowed)}
-                    className={`p-2 rounded-xl text-left border transition text-xs flex items-center justify-between ${
+                    className={`p-2 rounded-xl text-center border transition text-[11px] font-bold ${
                       petsAllowed
-                        ? "border-indigo-600 bg-indigo-50/50 text-indigo-700 font-bold"
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
                         : "border-slate-200 text-slate-600 bg-slate-50"
                     }`}
                   >
-                    <span>🐾 Pets Allowed</span>
+                    🐾 Pets
+                  </button>
+                  <button
+                    onClick={() => setIsFurnished(!isFurnished)}
+                    className={`p-2 rounded-xl text-center border transition text-[11px] font-bold ${
+                      isFurnished
+                        ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                        : "border-slate-200 text-slate-600 bg-slate-50"
+                    }`}
+                  >
+                    📦 Furnished
                   </button>
                 </div>
               </div>
@@ -263,7 +288,7 @@ export default function ListingsPage() {
                 loading,
                 sortedListings,
                 savedIds,
-                toggleSaveListing,
+                handleFavoriteToggle,
               )}
             </>
           )}
@@ -271,7 +296,8 @@ export default function ListingsPage() {
           {activeTab === "saved" && (
             <div className="space-y-3">
               <p className="text-xs text-slate-500 px-1">
-                Your bookmarked accommodation proposals in Prague.
+                Your bookmarked accommodation proposals synced to database
+                architecture.
               </p>
               {savedListings.length === 0 ? (
                 <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center text-slate-400 text-sm shadow-sm">
@@ -285,7 +311,7 @@ export default function ListingsPage() {
                   false,
                   savedListings,
                   savedIds,
-                  toggleSaveListing,
+                  handleFavoriteToggle,
                 )
               )}
             </div>
@@ -295,8 +321,7 @@ export default function ListingsPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-center px-1">
                 <p className="text-xs text-slate-500">
-                  Manage and track live performance telemetry of your room
-                  listings.
+                  Track analytics performance telemetry of your listings.
                 </p>
                 <Link
                   href="/listings/create"
@@ -335,12 +360,32 @@ export default function ListingsPage() {
                       </div>
                     </div>
 
-                    <div className="flex justify-end gap-2 border-t border-slate-50 pt-3">
-                      <button className="text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-100 transition">
-                        Edit Listing
-                      </button>
-                      <button className="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-xl hover:bg-rose-100 transition">
-                        Delete
+                    <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+                      <Link
+                        href={`/listings/edit/${listing.id}`}
+                        className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition"
+                      >
+                        Edit Parameters
+                      </Link>
+                      <button
+                        onClick={async () => {
+                          if (
+                            confirm(
+                              "Are you absolutely sure you want to delete this listing node permanently from PostgreSQL?",
+                            )
+                          ) {
+                            try {
+                              await deleteListingAction(listing.id);
+                              alert("Listing deleted successfully.");
+                              window.location.reload();
+                            } catch (err) {
+                              alert("Failed to drop node asset.");
+                            }
+                          }
+                        }}
+                        className="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-xl hover:bg-rose-100 transition"
+                      >
+                        Delete Permanent
                       </button>
                     </div>
                   </div>
@@ -350,44 +395,70 @@ export default function ListingsPage() {
           )}
 
           {activeTab === "profile" && (
-            <div className="space-y-4">
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-lg font-black text-indigo-700">
-                  
+            <div className="space-y-4 animate-fadeIn">
+              <div className="bg-white border border-slate-200 rounded-2xl p-5 text-center shadow-sm space-y-3">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white flex items-center justify-center text-3xl font-black mx-auto shadow-md">
+                  FZ
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-800">
-                    {isSignedIn ? "Active Session" : "Guest Developer"}
+                  <h3 className="text-base font-black text-slate-900">
+                    {isSignedIn ? "Ferda Zeynep Çapa" : "Guest Account"}
                   </h3>
-                  <p className="text-xs text-slate-400">Prague Hub Evaluator</p>
+                  <p className="text-xs text-slate-400 font-medium">
+                    Informatics Student • Prague Hub
+                  </p>
                 </div>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed italic bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                  "Looking for a quiet, study-friendly shared room setup near
+                  Vinohrady or Prague 2 loop nodes."
+                </p>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100 shadow-sm overflow-hidden text-sm font-medium text-slate-700">
+              <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100 shadow-sm overflow-hidden text-sm font-bold text-slate-700">
                 <button
                   onClick={() => setActiveTab("dashboard")}
                   className="w-full p-4 flex justify-between items-center hover:bg-slate-50 transition text-left"
                 >
-                  <span>💼 Manage Active Listings Dashboard</span>
-                  <span className="text-slate-300">→</span>
+                  <span className="flex items-center gap-2.5">
+                    💼 Manage My Live Listings ({userOwnedListings.length})
+                  </span>
+                  <span className="text-slate-300 text-xs">→</span>
                 </button>
-                <Link
-                  href="/listings/create"
-                  className="p-4 flex justify-between items-center hover:bg-slate-50 transition"
+                <button
+                  onClick={() => setActiveTab("saved")}
+                  className="w-full p-4 flex justify-between items-center hover:bg-slate-50 transition text-left"
                 >
-                  <span>➕ Create New Flat Advertisement</span>
-                  <span className="text-slate-300">→</span>
-                </Link>
-                <div className="p-4 flex justify-between items-center hover:bg-slate-50 transition cursor-pointer">
-                  <span>⚙️ Core System Preferences</span>
-                  <span className="text-slate-300">→</span>
+                  <span className="flex items-center gap-2.5">
+                    ❤️ My Favorited Rooms ({savedIds.length})
+                  </span>
+                  <span className="text-slate-300 text-xs">→</span>
+                </button>
+                <div className="w-full p-4 flex justify-between items-center hover:bg-slate-50 transition text-left cursor-pointer">
+                  <span className="flex items-center gap-2.5">
+                    ⚙️ Global Account Settings
+                  </span>
+                  <span className="text-slate-300 text-xs">→</span>
                 </div>
+                <div className="w-full p-4 flex justify-between items-center text-rose-600 hover:bg-rose-50/30 transition text-left cursor-pointer">
+                  <span className="flex items-center gap-2.5">
+                    ❌ Delete Profile Nodes
+                  </span>
+                  <span className="text-rose-300 text-xs">→</span>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <SignOutButton>
+                  <button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition text-center text-xs shadow-sm tracking-wide uppercase">
+                    Logout Secure Session
+                  </button>
+                </SignOutButton>
               </div>
             </div>
           )}
         </main>
 
-        <div className="absolute bottom-0 inset-x-0 bg-white/90 backdrop-blur-md border-t border-slate-100 h-16 flex justify-around items-center px-4 z-40">
+        <div className="fixed bottom-0 sm:bottom-8 w-full max-w-md bg-white/90 backdrop-blur-md border-t border-slate-100 h-16 flex justify-around items-center px-4 z-40 sm:rounded-b-3xl">
           <button
             onClick={() => setActiveTab("explore")}
             className={`flex flex-col items-center gap-1 text-xs transition ${activeTab === "explore" ? "text-indigo-600 font-bold" : "text-slate-400"}`}
@@ -403,7 +474,7 @@ export default function ListingsPage() {
             <span className="text-base">❤️</span>
             <span>Saved</span>
             {savedIds.length > 0 && (
-              <span className="absolute top-0 right-1 bg-rose-500 text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center animate-scaleIn">
+              <span className="absolute top-0 right-1 bg-rose-500 text-white font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center">
                 {savedIds.length}
               </span>
             )}

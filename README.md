@@ -1,36 +1,214 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RoomMatch Prague
 
-## Getting Started
+A production-oriented mobile-first platform for discovering rooms and flatmates in Prague, built for Erasmus students and young professionals relocating to the city.
 
-First, run the development server:
+RoomMatch Prague provides a fast, intuitive, and responsive experience for browsing rental listings, saving favorites, and creating advertisements. The project was built as a production-style MVP using modern full-stack technologies, AI-assisted development workflows, and Progressive Web App (PWA) capabilities.
+
+Designed with native mobile application principles in mind, the interface emphasizes mobile-first layouts, touch-friendly interactions, bottom navigation, and responsive user experiences that could later evolve into a native iOS or Android application.
+
+## 🌐 Live Demo
+
+**Production:** https://vercel-link.vercel.app
+
+---
+
+## 📱 Application Preview
+
+|                                   Premium Entrance View                                   |                                  Explore Stream View                                   |                                 AI Wizard View                                  |
+| :---------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
+| <img src="/screenshots/explore-view.png" width="240" alt="Premium Entrance View Mockup"/> | <img src="/screenshots/detail-view.png" width="240" alt="Explore Stream View Mockup"/> | <img src="/screenshots/ai-wizard.png" width="240" alt="AI Wizard View Mockup"/> |
+
+---
+
+# Why I Built This
+
+Finding accommodation in a new city is often fragmented across Facebook groups, WhatsApp chats, and multiple websites.
+
+RoomMatch Prague was created as a centralized platform where students and young professionals can easily browse listings, compare apartments, save favorites, and create their own advertisements through a mobile-first experience.
+
+The project also allowed me to explore modern full-stack architecture, server-driven applications, AI integration, and responsive product design.
+
+---
+
+# Tech Stack
+
+### Frontend
+
+- Next.js 15 (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+
+### Backend
+
+- Next.js Server Actions
+- PostgreSQL
+- Prisma ORM
+
+### Authentication
+
+- Clerk
+
+### AI
+
+- Google Gemini API (`gemini-2.5-flash`)
+
+### Deployment
+
+- Vercel
+
+---
+
+# Architecture
+
+The application follows a production-style full-stack architecture using the Next.js App Router.
+
+### Key architectural decisions
+
+- Server Components for efficient data fetching
+- Server Actions for secure server-side mutations
+- PostgreSQL as the primary relational database
+- Prisma ORM for type-safe database access
+- Clerk for authentication and route protection
+- Mobile-first responsive UI
+- Progressive Web App (PWA) support
+
+---
+
+# Features
+
+## 📱 Mobile Experience
+
+- Mobile-first responsive interface
+- Bottom navigation
+- Progressive Web App (PWA)
+- Touch-friendly layouts
+- Responsive mobile screens
+
+## 🏠 Listings
+
+- Create listings
+- Delete listings
+- Browse available rooms
+- Advanced search
+- District filtering
+- Budget filtering
+- Price sorting
+- Save favorite listings
+- Listing management
+
+## ✨ User Experience
+
+- Loading skeletons
+- Empty states
+- Optimistic UI updates
+- Disabled loading states
+- Responsive layouts
+- Debounced search
+
+## 🤖 AI Features
+
+- AI-generated listing descriptions
+- AI-powered rental price suggestions
+- AI-assisted listing creation workflow
+
+---
+
+# Database Design
+
+Main entities:
+
+- User
+- Listing
+- Favorite
+
+Relationships:
+
+- One user can create multiple listings.
+- Users can save multiple favorite listings.
+- Listings can belong to many users through favorites.
+
+The database is modeled using PostgreSQL and Prisma ORM.
+
+---
+
+# AI-Assisted Development
+
+This project was developed using AI-assisted workflows with Cursor, Gemini, and Claude.
+
+AI was used to accelerate development, explore implementation approaches, and improve productivity. Every generated solution was manually reviewed, tested, and refined before becoming part of the final codebase.
+
+---
+
+# Technical Highlights
+
+Key engineering concepts explored in this project:
+
+- Next.js Server Actions
+- Server Components
+- PostgreSQL relational modeling
+- Prisma ORM
+- Clerk Authentication
+- Responsive mobile-first design
+- Optimistic UI updates
+- Google Gemini API integration
+- Progressive Web App configuration
+
+---
+
+# Future Improvements
+
+Planned improvements include:
+
+- Image uploads (Cloudinary / Vercel Blob)
+- Interactive maps
+- Real-time messaging
+- Push notifications
+- Recommendation engine
+- Native iOS application
+- Native Android application
+
+---
+
+# Running Locally
 
 ```bash
+git clone https://github.com/yourusername/roommatch-prague
+
+cd roommatch-prague
+
+npm install
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create a `.env` file:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+DATABASE_URL=
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 
-## Learn More
+CLERK_SECRET_KEY=
 
-To learn more about Next.js, take a look at the following resources:
+GEMINI_API_KEY=
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Project Goals
 
-## Deploy on Vercel
+The goal of this project was to build a production-oriented mobile-first application while gaining hands-on experience with:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Modern full-stack architecture
+- Secure authentication
+- Relational database design
+- AI integration
+- Product-focused user experience
+- Responsive application development
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## License
+
+This project was built for educational and portfolio purposes.
