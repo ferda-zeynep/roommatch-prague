@@ -33,12 +33,20 @@ export default function ListingDetailPage() {
     async function loadListing() {
       const data = await getListingByIdAction(id);
       if (data) {
+        const rawData = data as any;
         setListing({
-          ...data,
-          createdAt: new Date(data.createdAt),
-          isFurnished: data.isFurnished ?? true,
-          petsAllowed: data.petsAllowed ?? true,
-          nearMetro: data.nearMetro ?? true,
+          id: rawData.id,
+          title: rawData.title,
+          district: rawData.district,
+          rent: Number(rawData.rent),
+          roomType: rawData.roomType,
+          lifestyle: rawData.lifestyle || "",
+          description: rawData.description,
+          imageUrl: rawData.imageUrl,
+          createdAt: new Date(rawData.createdAt),
+          isFurnished: rawData.isFurnished ?? true,
+          petsAllowed: rawData.petsAllowed ?? true,
+          nearMetro: rawData.nearMetro ?? true,
         });
       }
       setLoading(false);
@@ -73,7 +81,6 @@ export default function ListingDetailPage() {
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center items-start sm:py-8 font-sans antialiased">
       <div className="w-full max-w-md bg-slate-50 min-h-screen sm:min-h-[850px] sm:rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden relative border border-slate-200">
-        {/* Sticky Header */}
         <header className="bg-white border-b border-slate-100 px-4 py-3 flex justify-between items-center sticky top-0 z-40">
           <button
             onClick={() => router.back()}
@@ -86,9 +93,7 @@ export default function ListingDetailPage() {
           </span>
         </header>
 
-        {/* Scrollable Context */}
         <main className="flex-1 overflow-y-auto pb-20">
-          {/* Main Image Banner with Actions */}
           <div className="h-64 bg-slate-200 relative group">
             <img
               src={
@@ -110,7 +115,6 @@ export default function ListingDetailPage() {
           </div>
 
           <div className="p-4 space-y-5">
-            {/* Title & Core Pricing Matrix */}
             <div className="border-b border-slate-100 pb-4 space-y-1">
               <h1 className="text-lg font-black text-slate-900 leading-tight">
                 {listing.title}
@@ -128,7 +132,6 @@ export default function ListingDetailPage() {
               </div>
             </div>
 
-            {/* HIGH-AGENCY PRODUCT MINDSET: AI MATCH SCORE MODULE */}
             <div className="bg-gradient-to-r from-indigo-900 to-slate-900 rounded-2xl p-4 text-white shadow-md relative overflow-hidden">
               <div className="absolute right-[-10%] top-[-30%] w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
               <div className="flex items-center justify-between mb-2">
@@ -149,7 +152,6 @@ export default function ListingDetailPage() {
               </p>
             </div>
 
-            {/* Structural Specifications (Amenities Grid) */}
             <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-700">
               <div className="bg-white border border-slate-200 p-2.5 rounded-xl flex items-center gap-2">
                 <span>🚇</span>{" "}
@@ -173,7 +175,6 @@ export default function ListingDetailPage() {
               </div>
             </div>
 
-            {/* Property Narrative Text block */}
             <div className="space-y-1.5">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">
                 Property Narrative
@@ -183,7 +184,6 @@ export default function ListingDetailPage() {
               </p>
             </div>
 
-            {/* Lifestyle Tags */}
             {listing.lifestyle && (
               <div className="space-y-1.5">
                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider pl-0.5">
@@ -204,7 +204,6 @@ export default function ListingDetailPage() {
               </div>
             )}
 
-            {/* Context Actions Footer Interface */}
             <div className="pt-4 flex gap-2">
               <a
                 href={`mailto:landlord-prague@roommatch.io?subject=Inquiry: ${encodeURIComponent(listing.title)}`}
