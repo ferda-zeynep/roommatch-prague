@@ -8,14 +8,14 @@ Designed with native mobile application principles in mind, the interface emphas
 
 ## 🌐 Live Demo
 
-**Production:** roommatch-prague-git-main-ferda-zeyneps-projects.vercel.app
+- **Production URL:** [roommatch-prague.vercel.app](https://roommatch-prague.vercel.app/)
 
 ---
 
 ## 📱 Application Preview
 
-| Premium Entrance View | Explore Stream View | AI Wizard View |
-| :---: | :---: | :---: |
+|                                                            Premium Entrance View                                                            |                                                            Explore Stream View                                                            |                                                            AI Wizard View                                                            |
+| :-----------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------: |
 | <img src="https://github.com/user-attachments/assets/89f4b878-a7f7-4492-822b-160fe09e631f" width="240" alt="Premium Entrance View Mockup"/> | <img src="https://github.com/user-attachments/assets/c12a04b1-28a1-44ab-b3f4-2f0081cb85c2" width="240" alt="Explore Stream View Mockup"/> | <img src="https://github.com/user-attachments/assets/9131cd2e-5b89-40cf-89f7-f9da2e86d4a1" width="240" alt="AI Wizard View Mockup"/> |
 
 # Why I Built This
