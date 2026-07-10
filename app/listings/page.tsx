@@ -12,6 +12,7 @@ interface ListingItem {
   rent: number;
   roomType: string;
   lifestyle: string;
+  description: string;
   imageUrl?: string | null;
   createdAt: Date;
   isFurnished?: boolean;
