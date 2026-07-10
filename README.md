@@ -16,7 +16,7 @@ Designed with native mobile application principles in mind, the interface emphas
 
 |                                   Premium Entrance View                                   |                                  Explore Stream View                                   |                                 AI Wizard View                                  |
 | :---------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
-| <img src="/screenshots/explore-view.png" width="240" alt="Premium Entrance View Mockup"/> | <img src="/screenshots/detail-view.png" width="240" alt="Explore Stream View Mockup"/> | <img src="/screenshots/ai-wizard.png" width="240" alt="AI Wizard View Mockup"/> |
+| <img src="<img width="559" height="901" alt="explore-view" src="https://github.com/user-attachments/assets/89f4b878-a7f7-4492-822b-160fe09e631f" />"/> | <img src="<img width="557" height="886" alt="detail-view" src="https://github.com/user-attachments/assets/c12a04b1-28a1-44ab-b3f4-2f0081cb85c2" />" width="240" alt="Explore Stream View Mockup"/> | <img src="<img width="558" height="907" alt="ai-wizard" src="https://github.com/user-attachments/assets/9131cd2e-5b89-40cf-89f7-f9da2e86d4a1" />" width="240" alt="AI Wizard View Mockup"/> |
 
 ---
 
