@@ -8,15 +8,15 @@ Designed with native mobile application principles in mind, the interface emphas
 
 ## 🌐 Live Demo
 
-**Production:** https://vercel-link.vercel.app
+**Production:** roommatch-prague-git-main-ferda-zeyneps-projects.vercel.app
 
 ---
 
 ## 📱 Application Preview
 
-|                                   Premium Entrance View                                   |                                  Explore Stream View                                   |                                 AI Wizard View                                  |
-| :---------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
-| <img src="/screenshots/explore-view.png" width="240" alt="Premium Entrance View Mockup"/> | <img src="/screenshots/detail-view.png" width="240" alt="Explore Stream View Mockup"/> | <img src="/screenshots/ai-wizard.png" width="240" alt="AI Wizard View Mockup"/> |
+|                                      Premium Entrance View                                      |                                     Explore Stream View                                      |                                    AI Wizard View                                     |
+| :---------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------: |
+| <img src="public/screenshots/explore-view.png" width="240" alt="Premium Entrance View Mockup"/> | <img src="public/screenshots/detail-view.png" width="240" alt="Explore Stream View Mockup"/> | <img src="public/screenshots/ai-wizard.png" width="240" alt="AI Wizard View Mockup"/> |
 
 ---
 
