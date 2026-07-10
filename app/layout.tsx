@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RoomMatch Prague",
   description: "Find your perfect roommate in Prague",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
