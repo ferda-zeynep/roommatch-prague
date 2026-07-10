@@ -9,13 +9,11 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export async function getListingsAction() {
   try {
-    revalidatePath("/listings");
-
     const dbListings = await prisma.listing.findMany({
       orderBy: { createdAt: "desc" },
     });
 
-    if (dbListings.length === 0) {
+    if (!dbListings || dbListings.length === 0) {
       return [
         {
           id: "mock-1",
