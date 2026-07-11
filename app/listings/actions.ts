@@ -29,7 +29,7 @@ export async function getListingsAction() {
           nearMetro: true,
           petsAllowed: false,
           isFurnished: true,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
         },
         {
           id: "mock-2",
@@ -45,7 +45,7 @@ export async function getListingsAction() {
           nearMetro: true,
           petsAllowed: true,
           isFurnished: true,
-          createdAt: new Date(Date.now() - 3600000),
+          createdAt: new Date(Date.now() - 3600000).toISOString(),
         },
         {
           id: "mock-3",
@@ -61,12 +61,15 @@ export async function getListingsAction() {
           nearMetro: false,
           petsAllowed: true,
           isFurnished: true,
-          createdAt: new Date(Date.now() - 7200000),
+          createdAt: new Date(Date.now() - 7200000).toISOString(),
         },
       ];
     }
 
-    return dbListings;
+    return dbListings.map((listing) => ({
+      ...listing,
+      createdAt: listing.createdAt.toISOString(),
+    }));
   } catch (error) {
     console.error("Failed to fetch listings:", error);
     return [];
