@@ -13,58 +13,7 @@ export async function getListingsAction() {
       orderBy: { createdAt: "desc" },
     });
 
-    if (!dbListings || dbListings.length === 0) {
-      return [
-        {
-          id: "mock-1",
-          title: "Premium Student Room near Old Town Square",
-          district: "Prague 1",
-          rent: 16800,
-          roomType: "Private Room",
-          lifestyle: "Quiet, Student, International",
-          description:
-            "Stunning flatshare explicitly tailored for incoming Erasmus scholars. 2 minutes walking distance to the faculty nodes.",
-          imageUrl:
-            "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80",
-          nearMetro: true,
-          petsAllowed: false,
-          isFurnished: true,
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "mock-2",
-          title: "Modern 2+kk Studio Apartment",
-          district: "Vinohrady",
-          rent: 19500,
-          roomType: "Entire Flat",
-          lifestyle: "Non-smoker, Professional",
-          description:
-            "Fully furnished high-end apartment in the heart of Vinohrady. Surrounded by premium cafes, parks, and direct line-A metro links.",
-          imageUrl:
-            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80",
-          nearMetro: true,
-          petsAllowed: true,
-          isFurnished: true,
-          createdAt: new Date(Date.now() - 3600000).toISOString(),
-        },
-        {
-          id: "mock-3",
-          title: "Cozy Shared Room in Expat Flat",
-          district: "Karlín",
-          rent: 11000,
-          roomType: "Shared Room",
-          lifestyle: "Vegan, Social, Creative",
-          description:
-            "Looking for a friendly roommate to share an absolute gem of an apartment in Karlín. All utilities included in the price loop.",
-          imageUrl:
-            "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=600&q=80",
-          nearMetro: false,
-          petsAllowed: true,
-          isFurnished: true,
-          createdAt: new Date(Date.now() - 7200000).toISOString(),
-        },
-      ];
-    }
+    if (!dbListings) return [];
 
     return dbListings.map((listing) => ({
       ...listing,
