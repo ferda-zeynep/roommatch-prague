@@ -25,7 +25,9 @@ interface ListingItem {
   nearMetro?: boolean;
   [key: string]: any;
 }
+
 export const dynamic = "force-dynamic";
+
 export default function ListingsPage() {
   const { isSignedIn } = useAuth();
   const [activeTab, setActiveTab] = useState<
@@ -73,13 +75,14 @@ export default function ListingsPage() {
   useEffect(() => {
     async function initPlatformData() {
       try {
-        let [allListings, dbFavorites] = await Promise.all([
+        const [allListings, dbFavorites] = await Promise.all([
           getListingsAction(),
           getUserFavoritesAction(),
         ]);
 
-        if (!allListings || allListings.length === 0) {
-          allListings = [
+        let finalData = allListings;
+        if (!finalData || finalData.length === 0) {
+          finalData = [
             {
               id: "mock-1",
               title: "Premium Student Room near Old Town Square",
@@ -95,12 +98,10 @@ export default function ListingsPage() {
               petsAllowed: false,
               isFurnished: true,
               createdAt: "2026-07-11T20:00:00.000Z",
-              updatedAt: "2026-07-11T20:00:00.000Z",
-              moveInDate: "2026-07-11T20:00:00.000Z",
               userId: "mock-user-id",
               utilitiesIncluded: true,
               hasBalcony: false,
-            } as any,
+            },
             {
               id: "mock-2",
               title: "Modern 2+kk Studio Apartment",
@@ -116,12 +117,10 @@ export default function ListingsPage() {
               petsAllowed: true,
               isFurnished: true,
               createdAt: "2026-07-11T19:00:00.000Z",
-              updatedAt: "2026-07-11T19:00:00.000Z",
-              moveInDate: "2026-07-11T19:00:00.000Z",
               userId: "mock-user-id",
               utilitiesIncluded: true,
               hasBalcony: true,
-            } as any,
+            },
             {
               id: "mock-3",
               title: "Cozy Shared Room in Expat Flat",
@@ -137,18 +136,15 @@ export default function ListingsPage() {
               petsAllowed: true,
               isFurnished: true,
               createdAt: "2026-07-11T18:00:00.000Z",
-              updatedAt: "2026-07-11T18:00:00.000Z",
-              moveInDate: "2026-07-11T18:00:00.000Z",
               userId: "mock-user-id",
               utilitiesIncluded: true,
               hasBalcony: false,
-            } as any,
+            },
           ];
         }
 
-        const formattedData = allListings.map((item: any) => ({
+        const formattedData = finalData.map((item: any) => ({
           ...item,
-          createdAt: new Date(item.createdAt),
           isFurnished: item.isFurnished ?? true,
           petsAllowed: item.petsAllowed ?? true,
           nearMetro: item.nearMetro ?? true,
@@ -157,7 +153,7 @@ export default function ListingsPage() {
         setListings(formattedData);
         setSavedIds(dbFavorites || []);
       } catch (err) {
-        console.error(err);
+        console.error("Init data fetch failed:", err);
       } finally {
         setLoading(false);
       }
@@ -185,12 +181,19 @@ export default function ListingsPage() {
 
   const filteredListings = listings.filter((item) => {
     const query = debouncedSearchQuery.toLowerCase();
+
+    const titleText = item.title ? item.title.toLowerCase() : "";
+    const lifestyleText = item.lifestyle ? item.lifestyle.toLowerCase() : "";
+    const descText = item.description ? item.description.toLowerCase() : "";
+    const districtText = item.district ? item.district.toLowerCase() : "";
+    const roomText = item.roomType ? item.roomType.toLowerCase() : "";
+
     const matchesSearch =
-      item.title.toLowerCase().includes(query) ||
-      item.lifestyle.toLowerCase().includes(query) ||
-      item.description.toLowerCase().includes(query) ||
-      item.district.toLowerCase().includes(query) ||
-      item.roomType.toLowerCase().includes(query);
+      titleText.includes(query) ||
+      lifestyleText.includes(query) ||
+      descText.includes(query) ||
+      districtText.includes(query) ||
+      roomText.includes(query);
 
     const matchesDistrict =
       selectedDistrict === "All" || item.district === selectedDistrict;
@@ -212,7 +215,7 @@ export default function ListingsPage() {
   const sortedListings = [...filteredListings].sort((a, b) => {
     if (sortBy === "price-low") return a.rent - b.rent;
     if (sortBy === "price-high") return b.rent - a.rent;
-    return b.createdAt.getTime() - a.createdAt.getTime();
+    return (a.id || "").localeCompare(b.id || "");
   });
 
   const savedListings = listings.filter((item) => savedIds.includes(item.id));
