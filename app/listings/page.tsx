@@ -28,6 +28,66 @@ interface ListingItem {
 
 export const dynamic = "force-dynamic";
 
+const MOCK_LISTINGS = [
+  {
+    id: "mock-1",
+    title: "Premium Student Room near Old Town Square",
+    district: "Prague 1",
+    rent: 16800,
+    roomType: "Private Room",
+    lifestyle: "Quiet, Student, International",
+    description:
+      "Stunning flatshare explicitly tailored for incoming Erasmus scholars. 2 minutes walking distance to the faculty nodes.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80",
+    nearMetro: true,
+    petsAllowed: false,
+    isFurnished: true,
+    createdAt: "2026-07-11T20:00:00.000Z",
+    userId: "mock-user-id",
+    utilitiesIncluded: true,
+    hasBalcony: false,
+  },
+  {
+    id: "mock-2",
+    title: "Modern 2+kk Studio Apartment",
+    district: "Vinohrady",
+    rent: 19500,
+    roomType: "Entire Flat",
+    lifestyle: "Non-smoker, Professional",
+    description:
+      "Fully furnished high-end apartment in the heart of Vinohrady. Surrounded by premium cafes, parks, and direct line-A metro links.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80",
+    nearMetro: true,
+    petsAllowed: true,
+    isFurnished: true,
+    createdAt: "2026-07-11T19:00:00.000Z",
+    userId: "mock-user-id",
+    utilitiesIncluded: true,
+    hasBalcony: true,
+  },
+  {
+    id: "mock-3",
+    title: "Cozy Shared Room in Expat Flat",
+    district: "Karlín",
+    rent: 11000,
+    roomType: "Shared Room",
+    lifestyle: "Vegan, Social, Creative",
+    description:
+      "Looking for a friendly roommate to share an absolute gem of an apartment in Karlín. All utilities included in the price loop.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=600&q=80",
+    nearMetro: false,
+    petsAllowed: true,
+    isFurnished: true,
+    createdAt: "2026-07-11T18:00:00.000Z",
+    userId: "mock-user-id",
+    utilitiesIncluded: true,
+    hasBalcony: false,
+  },
+];
+
 export default function ListingsPage() {
   const { isSignedIn } = useAuth();
   const [activeTab, setActiveTab] = useState<
@@ -75,89 +135,52 @@ export default function ListingsPage() {
   useEffect(() => {
     async function initPlatformData() {
       try {
-        const [allListings, dbFavorites] = await Promise.all([
-          getListingsAction(),
-          getUserFavoritesAction(),
-        ]);
+        let allListings = await getListingsAction();
+        let dbFavorites = [];
 
-        console.log("CLIENT:", allListings);
-        console.log("CLIENT LENGTH:", allListings ? allListings.length : 0);
+        try {
+          dbFavorites = await getUserFavoritesAction();
+        } catch {}
 
-        let finalData: any[] = allListings || [];
+        console.log("Listings:", allListings);
 
-        if (finalData.length === 0) {
-          finalData = [
-            {
-              id: "mock-1",
-              title: "Premium Student Room near Old Town Square",
-              district: "Prague 1",
-              rent: 16800,
-              roomType: "Private Room",
-              lifestyle: "Quiet, Student, International",
-              description:
-                "Stunning flatshare explicitly tailored for incoming Erasmus scholars. 2 minutes walking distance to the faculty nodes.",
-              imageUrl:
-                "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80",
-              nearMetro: true,
-              petsAllowed: false,
-              isFurnished: true,
-              createdAt: "2026-07-11T20:00:00.000Z",
-              userId: "mock-user-id",
-              utilitiesIncluded: true,
-              hasBalcony: false,
-            },
-            {
-              id: "mock-2",
-              title: "Modern 2+kk Studio Apartment",
-              district: "Vinohrady",
-              rent: 19500,
-              roomType: "Entire Flat",
-              lifestyle: "Non-smoker, Professional",
-              description:
-                "Fully furnished high-end apartment in the heart of Vinohrady. Surrounded by premium cafes, parks, and direct line-A metro links.",
-              imageUrl:
-                "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=600&q=80",
-              nearMetro: true,
-              petsAllowed: true,
-              isFurnished: true,
-              createdAt: "2026-07-11T19:00:00.000Z",
-              userId: "mock-user-id",
-              utilitiesIncluded: true,
-              hasBalcony: true,
-            },
-            {
-              id: "mock-3",
-              title: "Cozy Shared Room in Expat Flat",
-              district: "Karlín",
-              rent: 11000,
-              roomType: "Shared Room",
-              lifestyle: "Vegan, Social, Creative",
-              description:
-                "Looking for a friendly roommate to share an absolute gem of an apartment in Karlín. All utilities included in the price loop.",
-              imageUrl:
-                "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=600&q=80",
-              nearMetro: false,
-              petsAllowed: true,
-              isFurnished: true,
-              createdAt: "2026-07-11T18:00:00.000Z",
-              userId: "mock-user-id",
-              utilitiesIncluded: true,
-              hasBalcony: false,
-            },
-          ];
+        if (!allListings || allListings.length === 0) {
+          console.log("Using MOCK");
+          setListings(
+            MOCK_LISTINGS.map((item) => ({
+              ...item,
+              createdAt: new Date(item.createdAt),
+              isFurnished: item.isFurnished ?? true,
+              petsAllowed: item.petsAllowed ?? true,
+              nearMetro: item.nearMetro ?? true,
+            })),
+          );
+          setSavedIds(dbFavorites || []);
+          setLoading(false);
+          return;
         }
 
-        const formattedData = finalData.map((item: any) => ({
-          ...item,
-          isFurnished: item.isFurnished ?? true,
-          petsAllowed: item.petsAllowed ?? true,
-          nearMetro: item.nearMetro ?? true,
-        }));
-
-        setListings(formattedData);
+        setListings(
+          allListings.map((item) => ({
+            ...item,
+            createdAt: new Date(item.createdAt),
+            isFurnished: item.isFurnished ?? true,
+            petsAllowed: item.petsAllowed ?? true,
+            nearMetro: item.nearMetro ?? true,
+          })),
+        );
         setSavedIds(dbFavorites || []);
       } catch (err) {
-        console.error("Init data fetch failed:", err);
+        console.error(err);
+        setListings(
+          MOCK_LISTINGS.map((item) => ({
+            ...item,
+            createdAt: new Date(item.createdAt),
+            isFurnished: item.isFurnished ?? true,
+            petsAllowed: item.petsAllowed ?? true,
+            nearMetro: item.nearMetro ?? true,
+          })),
+        );
       } finally {
         setLoading(false);
       }
