@@ -186,11 +186,11 @@ export default function ListingsPage() {
   const filteredListings = listings.filter((item) => {
     const query = debouncedSearchQuery.toLowerCase();
 
-    const titleText = item.title ? item.title.toLowerCase() : "";
-    const lifestyleText = item.lifestyle ? item.lifestyle.toLowerCase() : "";
-    const descText = item.description ? item.description.toLowerCase() : "";
-    const districtText = item.district ? item.district.toLowerCase() : "";
-    const roomText = item.roomType ? item.roomType.toLowerCase() : "";
+    const titleText = (item.title ?? "").toLowerCase();
+    const lifestyleText = (item.lifestyle ?? "").toLowerCase();
+    const descText = (item.description ?? "").toLowerCase();
+    const districtText = (item.district ?? "").toLowerCase();
+    const roomText = (item.roomType ?? "").toLowerCase();
 
     const matchesSearch =
       titleText.includes(query) ||
@@ -359,6 +359,10 @@ export default function ListingsPage() {
                   <option value="price-high">💰 Price ↓</option>
                 </select>
               </div>
+
+              <p className="text-xs text-rose-500 font-bold px-1">
+                DEBUG LENGTH: {sortedListings.length}
+              </p>
 
               {renderListingsStream(
                 loading,
