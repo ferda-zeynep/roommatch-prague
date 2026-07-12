@@ -13,7 +13,7 @@ export async function getListingsAction() {
       orderBy: { createdAt: "desc" },
     });
 
-    if (!dbListings) return [];
+    console.log("DB LISTINGS:", dbListings.length);
 
     return dbListings.map((listing) => ({
       ...listing,
