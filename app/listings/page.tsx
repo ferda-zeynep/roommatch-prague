@@ -136,7 +136,7 @@ export default function ListingsPage() {
     async function initPlatformData() {
       try {
         let allListings = await getListingsAction();
-        let dbFavorites = [];
+        let dbFavorites: any[] = [];
 
         try {
           dbFavorites = await getUserFavoritesAction();
@@ -382,10 +382,6 @@ export default function ListingsPage() {
                   <option value="price-high">💰 Price ↓</option>
                 </select>
               </div>
-
-              <p className="text-xs text-rose-500 font-bold px-1">
-                DEBUG LENGTH: {sortedListings.length}
-              </p>
 
               {renderListingsStream(
                 loading,
