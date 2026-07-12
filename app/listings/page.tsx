@@ -80,7 +80,9 @@ export default function ListingsPage() {
           getUserFavoritesAction(),
         ]);
 
-        // KESİN ÇÖZÜM: Tipi any[] yaparak TypeScript'in katı model kontrolünü devre dışı bırakıyoruz.
+        console.log("CLIENT:", allListings);
+        console.log("CLIENT LENGTH:", allListings ? allListings.length : 0);
+
         let finalData: any[] = allListings || [];
 
         if (finalData.length === 0) {
