@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useAuth, SignOutButton } from "@clerk/nextjs";
+import { useAuth, SignOutButton, useUser } from "@clerk/nextjs";
 import {
   getListingsAction,
   toggleFavoriteAction,
@@ -90,6 +90,7 @@ const MOCK_LISTINGS = [
 
 export default function ListingsPage() {
   const { isSignedIn } = useAuth();
+  const { user } = useUser();
   const [activeTab, setActiveTab] = useState<
     "explore" | "saved" | "profile" | "dashboard"
   >("explore");
@@ -497,11 +498,15 @@ export default function ListingsPage() {
             <div className="space-y-4 animate-fadeIn">
               <div className="bg-white border border-slate-200 rounded-2xl p-5 text-center shadow-sm space-y-3">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white flex items-center justify-center text-3xl font-black mx-auto shadow-md">
-                  {isSignedIn ? "FZ" : "👤"}
+                  {isSignedIn && user
+                    ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`
+                    : "👤"}
                 </div>
                 <div>
                   <h3 className="text-base font-black text-slate-900">
-                    {isSignedIn ? "Ferda Zeynep Çapa" : "Guest Account"}
+                    {isSignedIn && user
+                      ? `${user.firstName || ""} ${user.lastName || ""}`
+                      : "Guest Account"}
                   </h3>
                   <p className="text-xs text-slate-400 font-medium">
                     Informatics Student • Prague Hub
