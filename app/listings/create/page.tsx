@@ -253,7 +253,7 @@ export default function CreateListingPage() {
               />
             </div>
 
-            <div>
+            <div className="pb-4">
               <div className="flex justify-between items-center mb-1.5 pl-1">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                   Detailed Description
@@ -279,16 +279,18 @@ export default function CreateListingPage() {
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-md mt-6 text-sm disabled:bg-indigo-400 flex items-center justify-center gap-2"
-            >
-              {loading && (
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-              )}
-              Publish Advertisement
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-md text-sm disabled:bg-indigo-400 flex items-center justify-center gap-2"
+              >
+                {loading && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                )}
+                Publish Advertisement
+              </button>
+            </div>
           </form>
         </main>
       </div>
