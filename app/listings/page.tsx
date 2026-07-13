@@ -497,7 +497,7 @@ export default function ListingsPage() {
             <div className="space-y-4 animate-fadeIn">
               <div className="bg-white border border-slate-200 rounded-2xl p-5 text-center shadow-sm space-y-3">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white flex items-center justify-center text-3xl font-black mx-auto shadow-md">
-                  FZ
+                  {isSignedIn ? "FZ" : "👤"}
                 </div>
                 <div>
                   <h3 className="text-base font-black text-slate-900">
