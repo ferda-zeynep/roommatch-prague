@@ -1,10 +1,45 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
+import { getListingsAction } from "./listings/actions";
+
+interface SimpleListing {
+  title: string;
+  district: string;
+  rent: number;
+  roomType: string;
+}
 
 export default function MobileLandingPage() {
   const { isSignedIn } = useAuth();
+  const [featuredListing, setFeaturedListing] = useState<SimpleListing>({
+    title: "Cozy Studio Flat near Náměstí Míru",
+    district: "Prague 2 (Vinohrady)",
+    rent: 15500,
+    roomType: "Entire Flat",
+  });
+
+  useEffect(() => {
+    async function fetchNewestListing() {
+      try {
+        const data = await getListingsAction();
+        if (data && data.length > 0) {
+          const newest = data[data.length - 1];
+          setFeaturedListing({
+            title: newest.title,
+            district: newest.district,
+            rent: newest.rent,
+            roomType: newest.roomType,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchNewestListing();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center items-start sm:py-8 font-sans antialiased">
@@ -45,20 +80,20 @@ export default function MobileLandingPage() {
 
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-xs mx-auto space-y-3 text-left shadow-sm w-full">
             <div className="flex justify-between items-center text-[10px] font-bold text-indigo-600 uppercase">
-              <span>📍 Prague 2 (Vinohrady)</span>
+              <span>📍 {featuredListing.district}</span>
               <span className="bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">
-                94% Match
+                Featured
               </span>
             </div>
             <div className="text-xs font-bold text-slate-800 truncate">
-              Cozy Studio Flat near Náměstí Míru
+              {featuredListing.title}
             </div>
             <div className="flex justify-between items-center pt-1 border-t border-slate-200">
               <span className="text-xs font-black text-slate-900">
-                15,500 CZK
+                {featuredListing.rent.toLocaleString()} CZK
               </span>
               <span className="text-[9px] text-slate-400 font-medium">
-                🚇 Metro A reachable
+                {featuredListing.roomType}
               </span>
             </div>
           </div>
