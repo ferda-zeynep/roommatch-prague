@@ -370,7 +370,7 @@ export default function ListingsPage() {
 
               <div className="flex justify-between items-center px-1">
                 <span className="text-xs font-bold text-slate-500 uppercase">
-                  Results ({sortedListings.length})
+                  {sortedListings.length} Listings
                 </span>
                 <select
                   value={sortBy}
@@ -644,7 +644,7 @@ function renderListingsStream(
               className="w-full h-full object-cover"
             />
             <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase">
-              {listing.roomType === "Entire Flat" ? "Flat" : "Room"}
+              {listing.roomType || "Private Room"}
             </div>
 
             <button
