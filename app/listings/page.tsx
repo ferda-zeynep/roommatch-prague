@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth, SignOutButton, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import {
   getListingsAction,
   toggleFavoriteAction,
@@ -23,6 +24,7 @@ interface ListingItem {
   isFurnished?: boolean;
   petsAllowed?: boolean;
   nearMetro?: boolean;
+  userId?: string | null;
   [key: string]: any;
 }
 
@@ -89,8 +91,9 @@ const MOCK_LISTINGS = [
 ];
 
 export default function ListingsPage() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, userId } = useAuth();
   const { user } = useUser();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<
     "explore" | "saved" | "profile" | "dashboard"
   >("explore");
@@ -247,7 +250,14 @@ export default function ListingsPage() {
   });
 
   const savedListings = listings.filter((item) => savedIds.includes(item.id));
-  const userOwnedListings = listings.slice(0, 1);
+  const userOwnedListings = listings.filter((item) => item.userId === userId);
+
+  const handleCreateButtonClick = (e: React.MouseEvent) => {
+    if (!isSignedIn) {
+      e.preventDefault();
+      router.push("/sign-in");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center items-start sm:py-8 font-sans">
@@ -425,6 +435,7 @@ export default function ListingsPage() {
                 </p>
                 <Link
                   href="/listings/create"
+                  onClick={handleCreateButtonClick}
                   className="text-xs bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-xl shadow-sm"
                 >
                   + New
@@ -432,64 +443,70 @@ export default function ListingsPage() {
               </div>
 
               <div className="space-y-3">
-                {userOwnedListings.map((listing) => (
-                  <div
-                    key={listing.id}
-                    className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm flex flex-col gap-3"
-                  >
-                    <div className="flex gap-3">
-                      <div className="w-16 h-16 bg-slate-100 rounded-xl overflow-hidden shrink-0">
-                        <img
-                          src={
-                            listing.imageUrl ||
-                            "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=150&q=80"
-                          }
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-bold text-slate-800 truncate">
-                          {listing.title}
-                        </h4>
-                        <span className="text-[10px] bg-slate-100 text-slate-600 font-extrabold px-1.5 py-0.5 rounded uppercase mt-1 inline-block">
-                          {listing.district}
-                        </span>
-                        <p className="text-xs font-black text-indigo-600 mt-1">
-                          {listing.rent} CZK / mo
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
-                      <Link
-                        href={`/listings/edit/${listing.id}`}
-                        className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition"
-                      >
-                        Edit Parameters
-                      </Link>
-                      <button
-                        onClick={async () => {
-                          if (
-                            confirm(
-                              "Are you absolutely sure you want to delete this listing node permanently from PostgreSQL?",
-                            )
-                          ) {
-                            try {
-                              await deleteListingAction(listing.id);
-                              alert("Listing deleted successfully.");
-                              window.location.reload();
-                            } catch (err) {
-                              alert("Failed to drop node asset.");
-                            }
-                          }
-                        }}
-                        className="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-xl hover:bg-rose-100 transition"
-                      >
-                        Delete Permanent
-                      </button>
-                    </div>
+                {userOwnedListings.length === 0 ? (
+                  <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center text-slate-400 text-sm shadow-sm">
+                    No active listings published yet.
                   </div>
-                ))}
+                ) : (
+                  userOwnedListings.map((listing) => (
+                    <div
+                      key={listing.id}
+                      className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm flex flex-col gap-3"
+                    >
+                      <div className="flex gap-3">
+                        <div className="w-16 h-16 bg-slate-100 rounded-xl overflow-hidden shrink-0">
+                          <img
+                            src={
+                              listing.imageUrl ||
+                              "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=150&q=80"
+                            }
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold text-slate-800 truncate">
+                            {listing.title}
+                          </h4>
+                          <span className="text-[10px] bg-slate-100 text-slate-600 font-extrabold px-1.5 py-0.5 rounded uppercase mt-1 inline-block">
+                            {listing.district}
+                          </span>
+                          <p className="text-xs font-black text-indigo-600 mt-1">
+                            {listing.rent} CZK / mo
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-2 border-t border-slate-100 pt-3">
+                        <Link
+                          href={`/listings/edit/${listing.id}`}
+                          className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition"
+                        >
+                          Edit Parameters
+                        </Link>
+                        <button
+                          onClick={async () => {
+                            if (
+                              confirm(
+                                "Are you absolutely sure you want to delete this listing node permanently from PostgreSQL?",
+                              )
+                            ) {
+                              try {
+                                await deleteListingAction(listing.id);
+                                alert("Listing deleted successfully.");
+                                window.location.reload();
+                              } catch (err) {
+                                alert("Failed to drop node asset.");
+                              }
+                            }
+                          }}
+                          className="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-xl hover:bg-rose-100 transition"
+                        >
+                          Delete Permanent
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}
@@ -552,11 +569,20 @@ export default function ListingsPage() {
               </div>
 
               <div className="pt-2">
-                <SignOutButton>
-                  <button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition text-center text-xs shadow-sm tracking-wide uppercase">
-                    Logout Secure Session
-                  </button>
-                </SignOutButton>
+                {isSignedIn ? (
+                  <SignOutButton>
+                    <button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition text-center text-xs shadow-sm tracking-wide uppercase">
+                      Logout Secure Session
+                    </button>
+                  </SignOutButton>
+                ) : (
+                  <Link
+                    href="/sign-in"
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition text-center text-xs shadow-sm tracking-wide uppercase block"
+                  >
+                    Sign In to Account
+                  </Link>
+                )}
               </div>
             </div>
           )}
@@ -586,6 +612,7 @@ export default function ListingsPage() {
 
           <Link
             href="/listings/create"
+            onClick={handleCreateButtonClick}
             className="bg-indigo-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-md shadow-indigo-100 hover:bg-indigo-700 transition -translate-y-2"
           >
             +
