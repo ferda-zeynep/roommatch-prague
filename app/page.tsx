@@ -24,13 +24,13 @@ export default function MobileLandingPage() {
           </span>
         </header>
 
-        <main className="flex-1 flex flex-col justify-center px-6 text-center space-y-8 z-10 my-auto">
+        <main className="flex-1 flex flex-col justify-start pt-8 px-6 text-center space-y-6 z-10">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full text-[11px] font-bold text-indigo-700 mx-auto">
               ✨ Engineered for Erasmus & Expats
             </div>
 
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none pt-2">
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none pt-1">
               RoomMatch <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-800">
                 Prague
@@ -63,7 +63,7 @@ export default function MobileLandingPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 max-w-xs w-full mx-auto pt-4">
+          <div className="flex flex-col gap-3 max-w-xs w-full mx-auto pt-2">
             <Link
               href="/listings"
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition text-sm shadow-md active:scale-[0.99] text-center block"
